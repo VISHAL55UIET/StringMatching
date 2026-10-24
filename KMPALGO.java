@@ -2,18 +2,18 @@ public class KMPALGO {
 
     public static int[] buildLPS(String pattern) {
         int n = pattern.length();
-        int[] lps = new int[n];
-        int len = 0;
+        int[] lps =new int[n];
+        int len =0;
         int i = 1;
         while (i < n) {
-            if (pattern.charAt(i) == pattern.charAt(len)) {
+            if (pattern.charAt(i) ==pattern.charAt(len)) {
                 len++;
                 lps[i] = len;
                 i++;
-            } else {
-                if (len != 0) {
+            }else{
+                if(len != 0){
                     len = lps[len - 1];
-                } else {
+                }else {
                     lps[i] = 0;
                     i++;
                 }
