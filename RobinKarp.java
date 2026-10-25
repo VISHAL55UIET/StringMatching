@@ -8,7 +8,6 @@ public class RobinKarp {
         }
         return hash;
     }
-
     public static long updateHash(long prevHash, char oldChar,char newChar, int patternLength) {
         long newHash = (prevHash - oldChar) / PRIME;
         newHash += newChar* Math.pow(PRIME, patternLength - 1);
@@ -16,7 +15,7 @@ public class RobinKarp {
     }
     public static void search(String text, String pattern) {
         int patternLength = pattern.length();
-        if (patternLength == 0||patternLength > text.length()) {
+        if (patternLength == 0||patternLength > text.length()) {               
             return;
         }
         long patternHash = calculateHash(pattern);
