@@ -4,7 +4,7 @@ public class RobinKarp {
     public static long calculateHash(String str) {
         long hash = 0;
         for (int i = 0; i< str.length(); i++) {
-            hash+= str.charAt(i) * Math.pow(PRIME, i);
+            hash+= str.charAt(i) * Math.pow(PRIME, i);               
         }
         return hash;
     }
