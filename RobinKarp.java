@@ -11,10 +11,12 @@ public class RobinKarp {
     public static long updateHash(long prevHash, char oldChar,char newChar, int patternLength) {
         long newHash = (prevHash - oldChar) / PRIME;
         newHash += newChar* Math.pow(PRIME, patternLength - 1);
-        return newHash;
+        return newHash;      // return hash in the last           
+
     }
-    public static void search(String text, String pattern) {
-        int patternLength = pattern.length();
+    public static void search(String text, String pattern) { // calculate the    search method       
+        int patternLength = pattern.length();     
+        // return the shortest length  
         if (patternLength == 0||patternLength > text.length()) {               
             return;
         }
