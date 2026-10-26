@@ -1,7 +1,7 @@
 # String Matching Algorithms in Java
 ### Knuth–Morris–Pratt (KMP) & Rabin–Karp
 
-A comprehensive implementation of two fundamental string-matching algorithms in Java, focusing on efficient pattern searching, preprocessing techniques, hashing, and optimized character comparisons.
+A comprehensive implementation of two fundamental string-matching algorithms in Java, focusing on efficient pattern searching, preprocessing techniques, hashing, and optimized character comparisons..
 
 This repository demonstrates how different algorithmic strategies solve the same fundamental problem: finding a pattern inside a larger text efficiently.
 
