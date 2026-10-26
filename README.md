@@ -1,20 +1,19 @@
 # String Matching Algorithms in Java
-### Knuth–Morris–Pratt (KMP) & Rabin–Karp
+### Knuth–Morris–Pratt (KMP), Rabin–Karp & Aho–Corasick
 
-A comprehensive implementation of two fundamental string-matching algorithms in Java, focusing on efficient pattern searching, preprocessing techniques, hashing, and optimized character comparisons..
+A comprehensive implementation of three fundamental string-matching algorithms in Java, focusing on efficient pattern searching, preprocessing techniques, rolling hashes, and multi-pattern matching.
 
-This repository demonstrates how different algorithmic strategies solve the same fundamental problem: finding a pattern inside a larger text efficiently.
+This repository demonstrates how different algorithmic strategies solve the problem of finding patterns inside larger text efficiently.
 
 ## Overview
 
-String matching is a fundamental problem in computer science. Given a text string and a pattern, the objective is to determine whether the pattern exists in the text and identify its occurrence positions.
+String matching is a fundamental problem in computer science. Given a text string and one or more patterns, the objective is to determine whether those patterns exist in the text and identify their occurrence positions.
 
-This repository implements two classical approaches:
+This repository implements three classical approaches:
 
-- Knuth–Morris–Pratt (KMP): Uses prefix-function preprocessing to avoid redundant character comparisons.
-- Rabin–Karp: Uses rolling hash calculations to efficiently identify potential pattern matches.
-
-Both algorithms improve upon the naive string-matching approach, but they use different techniques to optimize the search process.
+- **Knuth–Morris–Pratt (KMP):** Uses prefix-function preprocessing to avoid redundant character comparisons.
+- **Rabin–Karp:** Uses rolling hashes to efficiently identify potential pattern matches.
+- **Aho–Corasick:** Uses a trie and failure links to search for multiple patterns simultaneously in a single pass through the text.
 
 ## Algorithms Implemented
 
@@ -40,7 +39,7 @@ Text:
 Pattern:
 `ABABCABAB`
 
-KMP preprocesses the pattern, constructs its LPS array, and uses the array to continue matching efficiently after mismatches.
+KMP preprocesses the pattern, constructs its LPS array, and uses it to continue matching efficiently after mismatches.
 
 #### Key Characteristics
 
@@ -76,25 +75,77 @@ Character verification is important because different strings can produce the sa
 - Uses hashing to compare pattern-sized windows.
 - Supports efficient rolling-hash updates.
 - Can be useful when searching for multiple patterns.
-- Has an average-case linear-time bound under typical hashing assumptions.
+- Has expected linear-time performance under suitable hashing assumptions.
 - Can degrade to quadratic time in the worst case due to repeated hash collisions and character verification.
 
-## KMP vs. Rabin–Karp
+### 3. Aho–Corasick Algorithm
 
-| Feature | KMP | Rabin–Karp |
-|---|---|---|
-| Primary technique | Prefix-function / LPS array | Rolling hash |
-| Preprocessing | Pattern preprocessing | Pattern and initial-window hashing |
-| Worst-case time | O(n + m) | O(nm) |
-| Typical time | O(n + m) | Expected O(n + m) under suitable hashing assumptions |
-| Extra space | O(m) | O(1) auxiliary space for a fixed-size rolling hash, excluding implementation-specific storage |
-| Hash collisions | Not applicable | Possible |
-| Character verification | Direct comparisons | Required when hashes match |
-| Best suited for | Reliable single-pattern matching | Applications involving one or multiple pattern searches |
+Aho–Corasick is a multi-pattern string-matching algorithm that efficiently searches for multiple patterns simultaneously within a single text.
+
+Unlike KMP, which typically searches for one pattern at a time, Aho–Corasick can find occurrences of many patterns in one traversal of the text.
+
+#### Core Concept
+
+The algorithm combines a Trie data structure with failure links.
+
+It consists of three main components:
+
+1. **Trie Construction:** Insert all patterns into a trie, sharing common prefixes.
+2. **Failure Link Construction:** Use Breadth-First Search (BFS) to build failure links that determine where to continue matching after a mismatch.
+3. **Pattern Matching:** Traverse the text once, following trie transitions and failure links to identify matching patterns.
+
+When a match is found, the algorithm reports the corresponding pattern occurrence.
+
+Failure links also allow the algorithm to identify patterns that end at the same position, including patterns that are suffixes of longer patterns.
+
+#### Example
+
+Text:
+`ahishers`
+
+Patterns:
+`he`, `she`, `his`, `hers`
+
+Expected matches:
+
+- `his` at index `1`
+- `she` at index `3`
+- `he` at index `4`
+- `hers` at index `4`
+
+The algorithm processes the text in a single traversal while identifying occurrences of all the supplied patterns.
+
+#### Key Characteristics
+
+- Supports simultaneous matching of multiple patterns.
+- Uses a trie for efficient pattern representation.
+- Uses failure links to avoid restarting the search.
+- Constructs failure links using BFS.
+- Is useful for dictionary matching, keyword detection, and text scanning.
+
+## KMP vs. Rabin–Karp vs. Aho–Corasick
+
+| Feature | KMP | Rabin–Karp | Aho–Corasick |
+|---|---|---|---|
+| Primary technique | LPS array | Rolling hash | Trie and failure links |
+| Main use case | Single-pattern matching | Hash-based pattern matching | Multi-pattern matching |
+| Preprocessing | Pattern preprocessing | Pattern and window hashing | Trie and failure-link construction |
+| Search complexity | O(n) | Expected O(n + m) | O(n + z) after preprocessing |
+| Worst-case complexity | O(n + m) total | O(nm) | O(n + z) after preprocessing |
+| Extra space | O(m) | O(1) for a fixed-size rolling hash | O(S × alphabet size) for a dense trie |
+| Hash collisions | Not applicable | Possible | Not applicable |
+| Deterministic performance | Yes | Not guaranteed to be linear | Yes |
+| Multiple patterns | Run separately for each pattern | Can process multiple patterns using hashing | Designed for multiple patterns |
 
 Here:
+
 - `n` = length of the text.
-- `m` = length of the pattern.
+- `m` = length of a single pattern.
+- `S` = total number of characters across all patterns.
+- `z` = total number of reported pattern occurrences.
+- `alphabet size` = number of supported characters.
+
+For Aho–Corasick, the total complexity includes preprocessing the patterns and constructing failure links. With a fixed alphabet and a standard trie implementation, construction is linear in the total pattern length, and searching takes `O(n + z)` time.
 
 ## Complexity Analysis
 
@@ -107,7 +158,7 @@ Here:
 | Total time complexity | O(n + m) |
 | Auxiliary space | O(m) |
 
-KMP provides a guaranteed linear-time solution because every text character is processed efficiently without repeatedly restarting the search from the beginning.
+KMP guarantees linear-time matching by reusing prefix information instead of repeatedly restarting the search.
 
 ### Rabin–Karp
 
@@ -115,27 +166,45 @@ KMP provides a guaranteed linear-time solution because every text character is p
 |---|---|
 | Initial hash calculation | O(m) |
 | Rolling-hash update per window | O(1) |
-| Average-case search | O(n + m), under suitable hashing assumptions |
+| Average-case search | Expected O(n + m) |
 | Worst-case search | O(nm) |
 | Auxiliary space | O(1) for a fixed-size rolling hash |
 
-The worst-case complexity can increase when many windows share the pattern's hash value and require character-by-character verification.
+Worst-case performance can deteriorate when many windows produce the same hash and require character-by-character verification.
+
+### Aho–Corasick
+
+| Operation | Complexity |
+|---|---|
+| Trie construction | O(S) |
+| Failure-link construction | O(S × alphabet size) for dense transitions |
+| Text searching | O(n + z) |
+| Total time complexity | O(S × alphabet size + n + z) |
+| Auxiliary space | O(S × alphabet size) for a dense trie |
+
+For a fixed alphabet, the construction and search complexities simplify to `O(S + n + z)`.
+
+A sparse trie representation can reduce memory usage when the supported alphabet is large.
 
 ## Why Not Use Naive String Matching?
 
 The naive approach checks the pattern at every possible starting position in the text.
 
-Its worst-case time complexity is:
+For one pattern, its worst-case time complexity is:
 
 `O(n × m)`
 
-For large inputs, repeated comparisons can become expensive.
+For multiple patterns, repeatedly applying naive matching can become even more expensive.
 
-KMP reduces this overhead by reusing prefix information, while Rabin–Karp uses rolling hashes to filter out windows that cannot match the pattern.
+These algorithms reduce unnecessary work using different techniques:
+
+- KMP reuses prefix information.
+- Rabin–Karp uses rolling hashes to filter candidate windows.
+- Aho–Corasick searches for multiple patterns simultaneously using trie transitions and failure links.
 
 ## Practical Applications
 
-These algorithms illustrate techniques used in a variety of string-processing problems:
+These algorithms demonstrate techniques used in a variety of string-processing problems:
 
 - Text searching and pattern detection.
 - Search engines and document processing.
@@ -143,24 +212,26 @@ These algorithms illustrate techniques used in a variety of string-processing pr
 - DNA sequence analysis.
 - Log analysis and event detection.
 - Duplicate and similarity detection.
-- Multi-pattern searching, particularly with hashing-based approaches.
+- Dictionary matching.
+- Keyword filtering and content scanning.
+- Multi-pattern searching in large text collections.
 
-Actual production systems may use more specialized algorithms or optimized library implementations depending on the workload.
+Aho–Corasick is particularly useful when a large set of keywords must be searched within the same text.
 
 ## Engineering Considerations
 
 When implementing string matching in Java, consider the following:
 
-1. Empty patterns: Define whether an empty pattern should match at index `0` or be rejected.
-2. Input validation: Handle null inputs according to the API contract.
-3. Character representation: Java `char` represents a UTF-16 code unit, not necessarily a complete Unicode code point.
-4. Hash collisions: Always verify actual characters when a Rabin–Karp hash matches.
-5. Integer overflow: Use appropriate arithmetic and modulus operations when implementing rolling hashes.
-6. Testing: Include repeated characters, overlapping matches, patterns longer than the text, and patterns absent from the text.
+1. **Empty patterns:** Define whether an empty pattern should match at index `0` or be rejected.
+2. **Input validation:** Handle null inputs according to the API contract.
+3. **Character representation:** Java `char` represents a UTF-16 code unit, not necessarily a complete Unicode code point.
+4. **Hash collisions:** Verify actual characters whenever Rabin–Karp hash values match.
+5. **Integer overflow:** Use appropriate arithmetic and modulus operations for rolling hashes.
+6. **Failure links:** Ensure Aho–Corasick correctly handles suffix patterns and overlapping matches.
+7. **Testing:** Include repeated characters, overlapping matches, patterns longer than the text, and patterns absent from the text.
+8. **Memory usage:** Select an appropriate trie representation based on the supported alphabet and number of patterns.
 
 ## Testing Scenarios
-
-Recommended test cases include:
 
 | Scenario | Text | Pattern |
 |---|---|---|
@@ -173,16 +244,23 @@ Recommended test cases include:
 | Pattern longer than text | `abc` | `abcdef` |
 | Exact match | `java` | `java` |
 
-For overlapping matches, the expected matching indices for `aba` in `abababa` are `0`, `2`, and `4`.
+For overlapping matches, the expected starting indices for `aba` in `abababa` are `0`, `2`, and `4`.
+
+For Aho–Corasick, additional tests should include:
+
+- Multiple patterns sharing a common prefix.
+- One pattern being a suffix of another.
+- Multiple patterns ending at the same text position.
+- Patterns that do not occur in the text.
+- Duplicate patterns, if supported by the implementation.
 
 ## Repository Structure
-
-The repository contains Java implementations of the two string-matching algorithms.
 
 ```text
 String-Matching-Algorithms/
 ├── KMPALGO.java
 ├── RabinKarp.java
+├── AhoCorasick.java
 └── README.md
 ```
 
@@ -194,6 +272,8 @@ By studying these implementations, developers can understand:
 
 - How prefix information reduces redundant comparisons.
 - How rolling hashes accelerate pattern-window comparisons.
+- How tries represent collections of patterns efficiently.
+- How BFS constructs failure links in Aho–Corasick.
 - The difference between deterministic and expected performance.
 - How preprocessing improves algorithmic efficiency.
 - Why worst-case analysis matters when selecting an algorithm.
@@ -201,11 +281,11 @@ By studying these implementations, developers can understand:
 
 ## Conclusion
 
-KMP and Rabin–Karp demonstrate two distinct approaches to optimizing string matching.
+KMP, Rabin–Karp, and Aho–Corasick demonstrate three distinct approaches to optimizing string matching.
 
-KMP uses structural information within the pattern to guarantee linear-time matching. Rabin–Karp uses rolling hashes to efficiently compare candidate windows, making it particularly useful when hashing can simplify multiple-pattern searches.
+KMP uses structural information within a pattern to guarantee linear-time matching. Rabin–Karp uses rolling hashes to efficiently identify candidate matches. Aho–Corasick combines a trie with failure links to search for multiple patterns in a single traversal of the text.
 
-Understanding both algorithms provides a strong foundation for advanced string processing, competitive programming, and algorithmic problem-solving.
+Understanding these algorithms provides a strong foundation for advanced string processing, competitive programming, and algorithmic problem-solving.
 
 ---
 
