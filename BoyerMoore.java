@@ -3,12 +3,9 @@ import java.util.*;
 public class BoyerMoore {
 
     public static int search(String text, String pattern) {
-        int n = text.length();
-        int m = pattern.length();
-
+        int n = text.length(),m = pattern.length();
         if (m == 0) return 0;
         if (m > n) return -1;
-
         int[] badChar = new int[256];
         Arrays.fill(badChar, -1);
 
