@@ -5,7 +5,7 @@ public class KMPALGO {
         int[] lps =new int[n];
         int len =0;
         int i = 1;
-        while (i < n) {
+        while(i < n) {
             if (pattern.charAt(i) ==pattern.charAt(len)) {
                 len++;
                 lps[i] = len;
@@ -19,7 +19,6 @@ public class KMPALGO {
                 }
             }
         }
-
         return lps;
     }
     public static void search(String text, String pattern) {

@@ -7,17 +7,14 @@ public class BoyerMoore {
         if (m == 0) return 0;
         if (m > n) return -1;
         int[] badChar = new int[256];
-        Arrays.fill(badChar, -1);
-
+        Arrays.fill(badChar, -1);    // arrays.fill (arr,-1);    
         for (int i = 0; i < m; i++) {
             badChar[pattern.charAt(i) % 256] = i;
         }
 
         int shift = 0;
-
         while (shift <= n - m) {
             int j = m - 1;
-
             while (j >= 0 &&
                    pattern.charAt(j) == text.charAt(shift + j)) {
                 j--;
