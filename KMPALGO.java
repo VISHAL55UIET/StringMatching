@@ -12,7 +12,7 @@ public class KMPALGO {
                 i++;
             }else{
                 if(len != 0){
-                    len = lps[len - 1];
+                    len = lps[len - 1];  
                 }else {
                     lps[i] = 0;
                     i++;
