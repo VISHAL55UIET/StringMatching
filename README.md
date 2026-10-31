@@ -1,6 +1,6 @@
 \# String Matching Algorithms in Java
 
-### KMP | Rabin–Karp | Aho–Corasick | Boyer–Moore
+### KMP | Rabin–Karp | Aho–Corasick | Boyer–Moore   
 
 A comprehensive collection of classical string-matching algorithms implemented in Java, covering efficient pattern searching, prefix-function preprocessing, rolling hashes, trie-based multi-pattern matching, and character-based pattern shifting.
 
@@ -14,7 +14,7 @@ This repository implements four classical string-matching algorithms:
 
 - Knuth–Morris–Pratt (KMP): Uses an LPS array to avoid redundant character comparisons.
 - Rabin–Karp: Uses rolling hashes to identify potential pattern matches efficiently.
-- Aho–Corasick: Uses a trie and failure links to search for multiple patterns in a single traversal of the text.
+- Aho–Corasick: Uses a trie and failure links to search for multiple patterns in a single traversal of the text./
 - Boyer–Moore: Compares characters from right to left and uses pattern-shifting heuristics to skip unnecessary comparisons.
 
 ## Algorithms Implemented
